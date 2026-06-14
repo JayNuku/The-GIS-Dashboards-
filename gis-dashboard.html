@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoSpatial Dashboard — Ocean Depths</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-o9N1j7kDZxvJfh4PFuZVe4mcNScBKHjz1YpscT4I+9E=" crossorigin="" />
+  <link rel="stylesheet" href="css/styles.css" />
+
+</head>
+<body>
+
+<div class="dash">
+  <div class="dash-header">
+    <span class="dash-title"><span class="dot"></span>GeoSpatial Dashboard</span>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('overview', this)">Overview</button>
+      <button class="tab" onclick="switchTab('layers', this)">Layers</button>
+      <button class="tab" onclick="switchTab('analysis', this)">Analysis</button>
+    </div>
+  </div>
+
+  <!-- Metric cards -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Total Features</div>
+      <div class="metric-value">4,812</div>
+      <div class="metric-sub">+127 this week</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Coverage km²</div>
+      <div class="metric-value">23,440</div>
+      <div class="metric-sub">Ghana extent</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Active Layers</div>
+      <div class="metric-value">6</div>
+      <div class="metric-sub">of 12 loaded</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Accuracy</div>
+      <div class="metric-value">94.2%</div>
+      <div class="metric-sub">GPS verified</div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div id="sec-overview" class="section active">
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Spatial Coverage — Greater Accra</div>
+        <div class="map-area">
+          <div id="map"></div>
+          <div class="map-legend">
+            <span><span class="legend-dot" style="background:var(--teal-light)"></span>High density</span>
+            <span><span class="legend-dot" style="background:rgba(168,218,220,0.5)"></span>Medium</span>
+            <span><span class="legend-dot" style="background:rgba(168,218,220,0.25)"></span>Low</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Land Use Distribution</div>
+        <div class="donut-wrap">
+          <canvas id="donut" width="100" height="100" style="width:90px;height:90px;flex-shrink:0" role="img" aria-label="Donut chart of land use distribution">Land use: Urban 38%, Vegetation 27%, Water 15%, Agriculture 12%, Bare 8%.</canvas>
+          <div class="donut-legend">
+            <div class="dl-row"><div class="dl-swatch" style="background:#2d8b8b"></div><span>Urban — 38%</span></div>
+            <div class="dl-row"><div class="dl-swatch" style="background:#3aadad"></div><span>Vegetation — 27%</span></div>
+            <div class="dl-row"><div class="dl-swatch" style="background:#a8dadc"></div><span>Water — 15%</span></div>
+            <div class="dl-row"><div class="dl-swatch" style="background:#1a5c5c"></div><span>Agriculture — 12%</span></div>
+            <div class="dl-row"><div class="dl-swatch" style="background:#243048"></div><span>Bare land — 8%</span></div>
+          </div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-row"><span class="bar-label">Urban</span><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div><span class="bar-val">38%</span></div>
+          <div class="bar-row"><span class="bar-label">Vegetation</span><div class="bar-track"><div class="bar-fill" style="width:27%"></div></div><span class="bar-val">27%</span></div>
+          <div class="bar-row"><span class="bar-label">Water</span><div class="bar-track"><div class="bar-fill" style="width:15%"></div></div><span class="bar-val">15%</span></div>
+          <div class="bar-row"><span class="bar-label">Agriculture</span><div class="bar-track"><div class="bar-fill" style="width:12%"></div></div><span class="bar-val">12%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-row">
+      <div class="card">
+        <div class="card-title">Feature Count — 8 wks</div>
+        <canvas class="spark" id="spark1" role="img" aria-label="Line chart of feature count over 8 weeks">Increasing from 3800 to 4812.</canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">Digitisation Rate</div>
+        <canvas class="spark" id="spark2" role="img" aria-label="Bar chart of weekly digitisation rate">Weekly feature additions.</canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">Elevation Profile</div>
+        <canvas class="spark" id="spark3" role="img" aria-label="Area chart of elevation profile">Elevation from 0 to 140m.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYERS TAB -->
+  <div id="sec-layers" class="section">
+    <div class="filter-row">
+      <button class="chip active" onclick="filterLayer(this,'all')">All</button>
+      <button class="chip" onclick="filterLayer(this,'vector')">Vector</button>
+      <button class="chip" onclick="filterLayer(this,'raster')">Raster</button>
+      <button class="chip" onclick="filterLayer(this,'remote')">Remote Sensing</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="geo-table" id="layerTable">
+          <thead>
+            <tr>
+              <th>Layer Name</th>
+              <th>Type</th>
+              <th>Features</th>
+              <th>Resolution</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-type="vector"><td>Road Network</td><td>Vector</td><td>1,204</td><td>—</td><td><span class="badge badge-high">Active</span></td></tr>
+            <tr data-type="raster"><td>Satellite Imagery</td><td>Raster</td><td>—</td><td>10m</td><td><span class="badge badge-high">Active</span></td></tr>
+            <tr data-type="remote"><td>NDVI Index</td><td>Remote Sensing</td><td>—</td><td>30m</td><td><span class="badge badge-high">Active</span></td></tr>
+            <tr data-type="vector"><td>Building Footprints</td><td>Vector</td><td>2,341</td><td>—</td><td><span class="badge badge-high">Active</span></td></tr>
+            <tr data-type="raster"><td>DEM (Elevation)</td><td>Raster</td><td>—</td><td>12.5m</td><td><span class="badge badge-med">Cached</span></td></tr>
+            <tr data-type="remote"><td>Land Surface Temp</td><td>Remote Sensing</td><td>—</td><td>100m</td><td><span class="badge badge-med">Cached</span></td></tr>
+            <tr data-type="vector"><td>Water Bodies</td><td>Vector</td><td>89</td><td>—</td><td><span class="badge badge-high">Active</span></td></tr>
+            <tr data-type="raster"><td>Aerial Ortho</td><td>Raster</td><td>—</td><td>0.5m</td><td><span class="badge badge-low">Offline</span></td></tr>
+            <tr data-type="remote"><td>SAR Backscatter</td><td>Remote Sensing</td><td>—</td><td>25m</td><td><span class="badge badge-low">Offline</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYSIS TAB -->
+  <div id="sec-analysis" class="section">
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Spatial Accuracy by Zone</div>
+        <div class="bar-group" style="margin-top:4px">
+          <div class="bar-row"><span class="bar-label">Central</span><div class="bar-track"><div class="bar-fill" style="width:97%"></div></div><span class="bar-val">97%</span></div>
+          <div class="bar-row"><span class="bar-label">East Legon</span><div class="bar-track"><div class="bar-fill" style="width:95%"></div></div><span class="bar-val">95%</span></div>
+          <div class="bar-row"><span class="bar-label">Tema</span><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><span class="bar-val">92%</span></div>
+          <div class="bar-row"><span class="bar-label">Achimota</span><div class="bar-track"><div class="bar-fill" style="width:89%"></div></div><span class="bar-val">89%</span></div>
+          <div class="bar-row"><span class="bar-label">Dome</span><div class="bar-track"><div class="bar-fill" style="width:86%"></div></div><span class="bar-val">86%</span></div>
+          <div class="bar-row"><span class="bar-label">Lashibi</span><div class="bar-track"><div class="bar-fill" style="width:82%"></div></div><span class="bar-val">82%</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Monthly Feature Growth</div>
+        <canvas id="growthChart" style="width:100%;height:170px" role="img" aria-label="Bar chart of monthly feature growth Jan to Jun">Monthly GIS feature additions.</canvas>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">Coordinate Reference Systems in Use</div>
+      <div class="bar-group">
+        <div class="bar-row"><span class="bar-label">WGS 84</span><div class="bar-track"><div class="bar-fill" style="width:60%"></div></div><span class="bar-val">60%</span></div>
+        <div class="bar-row"><span class="bar-label">UTM Zone 30N</span><div class="bar-track"><div class="bar-fill" style="width:28%"></div></div><span class="bar-val">28%</span></div>
+        <div class="bar-row"><span class="bar-label">Ghana Meter Grid</span><div class="bar-track"><div class="bar-fill" style="width:12%"></div></div><span class="bar-val">12%</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o6e3j5p4dcfXr0TFyPa2OyCWjVNhvkWevX8kfQQImwY=" crossorigin=""></script>
+<script src="js/dashboard.js" defer></script>
+</body>
+</html>

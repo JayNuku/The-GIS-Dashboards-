@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hourly Production Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+        input {
+            width: 90%;
+            padding: 4px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .signature {
+            margin-top: 20px;
+        }
+        @media print {
+            input {
+                border: none;
+                border-bottom: 1px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>5.5 Hourly production report</h2>
+        
+        <div class="header">
+            <div>Production writer: <input type="text"></div>
+            <div>Date: <input type="text"></div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">Line</th>
+                    <th rowspan="2">Style</th>
+                    <th rowspan="2">Target Type</th>
+                    <th colspan="4">Hourly Production (I-IV)</th>
+                    <th colspan="4">Hourly Production (V-VIII)</th>
+                    <th rowspan="2">O/T</th>
+                    <th rowspan="2">Total Target</th>
+                    <th rowspan="2">Total Output</th>
+                    <th rowspan="2">Total Variation</th>
+                </tr>
+                <tr>
+                    <th>I</th>
+                    <th>II</th>
+                    <th>III</th>
+                    <th>IV</th>
+                    <th>V</th>
+                    <th>VI</th>
+                    <th>VII</th>
+                    <th>VIII</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 10 rows -->
+                <tr>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+                <!-- Repeat the above <tr> block 9 more times -->
+            </tbody>
+        </table>
+
+        <div class="signature">
+            Authorized signature: <input type="text">
+        </div>
+    </div>
+</body>
+</html>
